@@ -5,6 +5,9 @@ Minimal entry point that imports the app from the api module.
 Run with: uv run uvicorn server:app --host 0.0.0.0 --port 8082 --timeout-graceful-shutdown 5
 """
 
+from core.patch import apply_pydantic_314_patch
+apply_pydantic_314_patch()
+
 from api.app import app, create_app
 
 __all__ = ["app", "create_app"]

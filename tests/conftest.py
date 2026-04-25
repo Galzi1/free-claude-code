@@ -1,3 +1,6 @@
+from core.patch import apply_pydantic_314_patch
+apply_pydantic_314_patch()
+
 import asyncio
 import contextlib
 import logging
