@@ -12,18 +12,28 @@ def apply_pydantic_314_patch():
             import pydantic._internal._typing_extra as typing_extra
 
             _original_eval_type = typing_extra._eval_type
+            if getattr(_original_eval_type, "__pydantic_314_shim__", False):
+                return
 
             def _patched_eval_type(value, globalns=None, localns=None, type_params=None):
-                if sys.version_info >= (3, 14):
-                    # In Python 3.14, typing._eval_type no longer accepts prefer_fwd_module
-                    return typing._eval_type(
+                try:
+                    return _original_eval_type(value, globalns, localns, type_params)
+                except TypeError as exc:
+                    # Python 3.14 may reject Pydantic's prefer_fwd_module kwarg.
+                    if "prefer_fwd_module" not in str(exc):
+                        raise
+                    evaluated = typing._eval_type(
                         value,
                         globalns,
                         localns,
                         type_params=type_params,
                     )
-                return _original_eval_type(value, globalns, localns, type_params)
+                    # Keep Pydantic's 3.14 normalization behavior.
+                    if evaluated is None:
+                        evaluated = type(None)
+                    return evaluated
 
+            _patched_eval_type.__pydantic_314_shim__ = True
             typing_extra._eval_type = _patched_eval_type
         except (ImportError, AttributeError):
             pass
