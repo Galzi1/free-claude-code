@@ -184,6 +184,7 @@ def build_provider_config(
         http_write_timeout=settings.http_write_timeout,
         http_connect_timeout=settings.http_connect_timeout,
         enable_thinking=settings.enable_thinking,
+        enable_throttling=settings.enable_provider_throttling,
         proxy=proxy,
     )
 

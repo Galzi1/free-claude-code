@@ -1,5 +1,7 @@
 """Centralized configuration using Pydantic Settings."""
 
+from __future__ import annotations
+
 import os
 from collections.abc import Mapping
 from functools import lru_cache
@@ -143,6 +145,9 @@ class Settings(BaseSettings):
         default=5, validation_alias="PROVIDER_MAX_CONCURRENCY"
     )
     enable_thinking: bool = Field(default=True, validation_alias="ENABLE_THINKING")
+    enable_provider_throttling: bool = Field(
+        default=True, validation_alias="ENABLE_PROVIDER_THROTTLING"
+    )
 
     # ==================== HTTP Client Timeouts ====================
     http_read_timeout: float = Field(
